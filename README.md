@@ -33,6 +33,14 @@ Seed data to foods table:
 php artisan db:seed --class=FoodSeeder 
 ```
 
+Seed admin to users table:
+```sh
+php artisan db:seed --class=UserSeeder 
+```
+
+> username: admin_food
+password: admin_food
+
 Serve the project:
 ```sh
 php artisan serve
@@ -40,4 +48,4 @@ php artisan serve
 
 Finally visit:
 
-http://127.0.0.1:8000/
+http://127.0.0.1:8000/login
