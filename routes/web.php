@@ -23,9 +23,8 @@ Route::middleware(['guest'])->group(function () {
     Route::post('register', [AuthController::class, 'postRegister'])->name('register.post');
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/{type_id?}', [FoodController::class, 'index'])->name('home');
-    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+Route::group(['prefix' => 'user', 'middleware' => ['auth', 'user.is.public']], function () {
+    Route::get('/food/{type_id?}', [FoodController::class, 'index'])->where('id', '[0-9]+')->name('home');
     Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('orders/create', [OrderController::class, 'create'])->name('orders.create');
     Route::get('order-history/{food_id}', [OrderController::class, 'history'])->name('orders.history');
@@ -35,4 +34,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'user.is.admin']], f
     Route::get('orders', [OrderController::class, 'index'])->name('admin.orders');
     Route::get('orders/{order}/confirm', [OrderController::class, 'confirm'])->name('admin.orders.confirm');
     Route::delete('orders/{order}', [OrderController::class, 'destroy'])->name('admin.orders.destroy');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 });

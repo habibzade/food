@@ -19,7 +19,7 @@
 
             {{--List of Orders--}}
             <h5>Orders</h5>
-            @if ($orders)
+            @if (count($orders))
                 <table class="table table-striped">
                     <thead>
                         <tr>
