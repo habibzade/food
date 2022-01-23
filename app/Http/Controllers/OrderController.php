@@ -21,6 +21,18 @@ class OrderController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $orders = Order::where('confirm', false)->get();
+
+        return view('order.index', compact('orders'));
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @param Request $request
@@ -51,6 +63,41 @@ class OrderController extends Controller
         }
 
         return back()->withErrors('Internal error. Please try later.');
+    }
+
+    /**
+     * @param Order $order
+     * @return mixed
+     */
+    public function confirm(Order $order)
+    {
+        $result = $this->order->confirm($order);
+
+        if ($result) {
+            return back()->withSuccess('Order confirmed successfully.');
+
+        } elseif ($result == Order::FOOD_NOT_EXIST) {
+            return back()->withError('Food not exist (stock is zero).');
+        }
+
+        return back()->withError('Order confirm failed.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Order  $order
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Order $order)
+    {
+        if ($order) {
+            if ($order->delete()) {
+                return back()->withSuccess('Order deleted successfully.');
+            }
+        }
+
+        return back()->withError('Order delete failed.');
     }
 
     /**

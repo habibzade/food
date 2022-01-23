@@ -6,6 +6,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use UserHelper;
 
 class AuthController extends Controller
 {
@@ -37,6 +38,12 @@ class AuthController extends Controller
         $credentials = $request->only('username', 'password');
 
         if (Auth::attempt($credentials)) {
+
+            // Check user is admin
+            if (UserHelper::isAdmin()) {
+                return redirect()->route('admin.orders');
+            }
+
             return redirect()->route('home');
         }
 

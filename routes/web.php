@@ -24,9 +24,15 @@ Route::middleware(['guest'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/', [FoodController::class, 'index'])->name('home');
+    Route::get('/{type_id?}', [FoodController::class, 'index'])->name('home');
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('orders/create', [OrderController::class, 'create'])->name('orders.create');
     Route::get('order-history/{food_id}', [OrderController::class, 'history'])->name('orders.history');
-    Route::resource('orders', OrderController::class);
 });
 
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'user.is.admin']], function () {
+    Route::get('orders', [OrderController::class, 'index'])->name('admin.orders');
+    Route::get('orders/{order}/confirm', [OrderController::class, 'confirm'])->name('admin.orders.confirm');
+    Route::delete('orders/{order}', [OrderController::class, 'destroy'])->name('admin.orders.destroy');
+});

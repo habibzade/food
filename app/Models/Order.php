@@ -11,6 +11,8 @@ class Order extends Model
 {
     use HasFactory;
 
+    const FOOD_NOT_EXIST = 0;
+
     /**
      * @var array
      */
@@ -32,13 +34,29 @@ class Order extends Model
     {
         if ($food = Food::find($food_id)) {
 
+            // Create Order
+            return Order::create([
+                'user_id' => Auth::user()->id,
+                'food_id' => $food->id
+            ]);
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $order
+     * @return bool
+     */
+    public function confirm($order)
+    {
+        // Check stock is exist
+        if ($food = Food::where(['id' => $order->food_id], ['stock', '>', 0])) {
+
             DB::beginTransaction();
             try {
-                // Create Order
-                Order::create([
-                    'user_id' => Auth::user()->id,
-                    'food_id' => $food->id
-                ]);
+                // Confirm order
+                $this->confirmOrder($order);
 
                 // Update Stock
                 $food->decrement('stock');
@@ -51,7 +69,17 @@ class Order extends Model
             }
         }
 
-        return false;
+        return self::FOOD_NOT_EXIST;
+    }
+
+    /**
+     * @param $order
+     * @return mixed
+     */
+    private function confirmOrder($order)
+    {
+        $order->confirm = true;
+        return $order->save();
     }
 
     /**
