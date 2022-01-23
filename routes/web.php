@@ -39,3 +39,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'user.is.admin']], f
 Route::middleware(['auth'])->group(function () {
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 });
+
+Route::view('/', 'welcome');
