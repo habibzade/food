@@ -26,4 +26,19 @@ class Food extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    /**
+     * @param $type_id
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function foods($type_id)
+    {
+        $query = Food::query();
+
+        if ($type_id) {
+            $query = $query->where('type_id', $type_id);
+        }
+
+        return $query->get();
+    }
 }

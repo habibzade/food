@@ -2,8 +2,23 @@
 
 @section('content')
 <div class="container">
+    <div class="row text-center m-3">
+        <div class="col">
+            <div class="btn-group btn-group-toggle">
+                {{--All type option--}}
+                <label class="btn btn-info {{ empty($type_id) ? 'active' : '' }}">
+                    <a class="btn btn-info border" href="{{ route('home', null) }}">All</a>
+                </label>
+                {{--Types of food options--}}
+                @foreach($types as $type)
+                    <label class="btn btn-info {{ $type_id == $type->id ? 'active' : '' }}">
+                        <a class="btn btn-info border" href="{{ route('home', $type->id) }}">{{ ucfirst($type->title) }}</a>
+                    </label>
+                @endforeach
+            </div>
+        </div>
+    </div>
     <div class="row">
-
         {{--Successfully Message--}}
         @if ($message = Session::get('success'))
             <div class="alert alert-success alert-dismissible fade show col-12 mt-3 text-center" role="alert">
